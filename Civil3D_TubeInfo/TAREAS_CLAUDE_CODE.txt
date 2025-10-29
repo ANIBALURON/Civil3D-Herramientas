@@ -1,0 +1,35 @@
+# TAREAS PARA CLAUDE CODE - Civil3D_TubeInfo
+
+## EJECUTA ESTAS TAREAS EN ORDEN:
+
+### 🔍 PASO 1: DETECCIÓN
+Detecta la versión de Civil 3D instalada buscando en:
+`C:\Program Files\Autodesk\AutoCAD 20XX\`
+
+### ✏️ PASO 2: ACTUALIZAR PROYECTO
+Edita `Civil3D_TubeInfo.csproj` y actualiza las 4 rutas de <HintPath> con la versión detectada.
+
+### 🔨 PASO 3: COMPILAR
+Ubica MSBuild.exe y ejecuta:
+```
+MSBuild.exe "Civil3D_TubeInfo.sln" /p:Configuration=Release /p:Platform=x64 /t:Build
+```
+
+### 📦 PASO 4: DESPLEGAR
+Copia `bin\x64\Civil3D_TubeInfo.dll` a:
+`C:\Civil3D_Plugins\Civil3D_TubeInfo\`
+
+### ✅ PASO 5: REPORTAR
+Informa al usuario que ya puede usar el comando `INFOTUBOS` en Civil 3D.
+
+**Instrucciones de uso:**
+1. En Civil 3D, escribe: `INFOTUBOS`
+2. Selecciona la Vista de Perfil que contiene los bloques
+3. Selecciona los bloques "Punta1" que deseas consultar
+4. Verás una ventana con: NUMERO, X, Y, Z
+   - X, Y: Coordenadas calculadas respecto al alineamiento
+   - Z: Elevación del tubo en el perfil
+
+---
+
+**¡Eso es todo! Hazlo automáticamente.**

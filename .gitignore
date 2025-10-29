@@ -1,0 +1,90 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Local history for Visual Studio
+.localhistory/
+
+# IntelliSense (based on altered path mapping)
+.vs/
+
+# Rider cache
+.idea/caches/
+.idea/modules.xml
+.idea/misc.xml
+.idea/runConfigurations.xml
+
+# Dependencies
+packages/
+.nuget/
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# NUnit 3
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific
+Civil3D_TubeInfo_TEMP.dll
+INSTRUCCIONES_ACTUALIZAR_DLL.txt
+ESTADO_DLL.txt
+UpdateDLL.ps1

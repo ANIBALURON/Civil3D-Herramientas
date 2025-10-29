@@ -1,0 +1,101 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║        🤖 PROYECTO LISTO PARA CLAUDE CODE 🤖                ║
+║                                                              ║
+║              Civil3D_TubeInfo - Versión 1.0                 ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+📋 QUÉ HACE ESTA APLICACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Comando para Civil 3D que permite seleccionar múltiples 
+  bloques "Punta1" y ver su información (NUMERO, X, Y, Z)
+  en una ventana emergente con opción de exportar a CSV.
+
+
+🚀 INICIO RÁPIDO CON CLAUDE CODE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abre Claude Code en esta carpeta
+
+2. Escribe o pega este mensaje:
+
+   ┌────────────────────────────────────────────────────────┐
+   │ Lee README_CLAUDE_CODE.md y compila este proyecto     │
+   │ para Civil 3D. Detecta mi versión de Civil 3D,        │
+   │ actualiza las referencias, compila y despliega la DLL.│
+   └────────────────────────────────────────────────────────┘
+
+3. ¡Claude Code hará todo automáticamente!
+
+
+📁 ARCHIVOS IMPORTANTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🤖 PARA CLAUDE CODE:
+     • README_CLAUDE_CODE.md ← Instrucciones detalladas
+     • TAREAS_CLAUDE_CODE.txt ← Lista de tareas
+     • INSTRUCCIONES_CLAUDE_CODE.md ← Guía rápida
+
+  👨‍💻 PARA HUMANOS:
+     • README.md ← Documentación completa
+     • GUIA_RAPIDA.md ← Compilación manual paso a paso
+     • PERSONALIZACION.md ← Cómo modificar el código
+
+  🔧 SCRIPTS:
+     • compile.bat ← Compilación automática (Windows)
+     • build_and_deploy.ps1 ← PowerShell avanzado
+
+
+💻 CÓDIGO FUENTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • TubeInfoCommands.cs → Comando INFOTUBOS
+  • TubeInfoForm.cs → Ventana de visualización
+  • Civil3D_TubeInfo.csproj → Proyecto Visual Studio
+  • Civil3D_TubeInfo.sln → Solución
+
+
+✅ DESPUÉS DE COMPILAR:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  La DLL estará en:
+  C:\Civil3D_Plugins\Civil3D_TubeInfo\Civil3D_TubeInfo.dll
+
+  Cómo usar en Civil 3D:
+  1. Comando: NETLOAD
+  2. Selecciona la DLL
+  3. Comando: INFOTUBOS
+  4. Selecciona la Vista de Perfil
+  5. Selecciona bloques "Punta1"
+  6. ¡Listo! Verás NUMERO, X, Y, Z
+
+
+🎯 CARACTERÍSTICAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ Selección múltiple de bloques
+  ✓ Tabla con NUMERO, X, Y, Z
+  ✓ Exportación a CSV
+  ✓ Interfaz moderna
+  ✓ 100% personalizable
+
+
+⚙️ REQUISITOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • Civil 3D (2020 o superior)
+  • Visual Studio 2019/2022 o Build Tools
+  • .NET Framework 4.8
+  • Claude Code (para compilación automática)
+
+
+📞 SOPORTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ¿Problemas? Consulta:
+  • README_CLAUDE_CODE.md (sección "MANEJO DE ERRORES")
+  • GUIA_RAPIDA.md (sección "Troubleshooting")
+
+
+╔══════════════════════════════════════════════════════════════╗
+║  💡 TIP: Lee INSTRUCCIONES_CLAUDE_CODE.md para más detalles ║
+╚══════════════════════════════════════════════════════════════╝
+

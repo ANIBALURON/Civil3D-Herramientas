@@ -1,0 +1,56 @@
+# 📋 PROMPT PARA CLAUDE CODE (COPIAR Y PEGAR)
+
+## Copia este texto completo y pégalo en Claude Code:
+
+---
+
+Hola! Necesito tu ayuda para compilar este proyecto de Civil 3D. 
+
+Este es un proyecto .NET Framework 4.8 para AutoCAD Civil 3D que crea un comando llamado INFOTUBOS.
+
+Por favor, ejecuta estas tareas en orden:
+
+**TAREA 1: DETECTAR CIVIL 3D**
+Busca en "C:\Program Files\Autodesk\" todas las carpetas que contengan "AutoCAD" y determina qué versiones de Civil 3D tengo instaladas (2020, 2021, 2022, 2023, 2024, etc.). Muéstrame qué encontraste.
+
+**TAREA 2: ACTUALIZAR REFERENCIAS**
+Abre el archivo Civil3D_TubeInfo.csproj y actualiza TODAS las rutas de <HintPath> dentro de los elementos <Reference> según la versión más reciente de Civil 3D que encontraste. Las referencias son:
+- AcCoreMgd.dll
+- AcDbMgd.dll  
+- AcMgd.dll
+- AeccDbMgd.dll (este está en la subcarpeta C3D)
+
+**TAREA 3: LIMPIAR Y COMPILAR**
+1. Elimina las carpetas bin y obj si existen
+2. Busca MSBuild.exe en Visual Studio 2019/2022
+3. Ejecuta: MSBuild "Civil3D_TubeInfo.sln" /p:Configuration=Release /p:Platform=x64 /t:Build /v:minimal
+4. Verifica que se generó: bin\x64\Civil3D_TubeInfo.dll
+
+**TAREA 4: DESPLEGAR**
+1. Crea la carpeta: C:\Civil3D_Plugins\Civil3D_TubeInfo\
+2. Copia la DLL compilada a esa carpeta
+3. Muéstrame la ubicación final
+
+**TAREA 5: REPORTE**
+Dame un resumen de:
+- Versión de Civil 3D usada
+- Estado de la compilación
+- Ubicación de la DLL
+- Instrucciones para usar el comando INFOTUBOS en Civil 3D
+
+Si encuentras algún error en cualquier paso, detente y explícame qué falló y cómo solucionarlo.
+
+Lee el archivo README_CLAUDE_CODE.md si necesitas más detalles sobre cada tarea.
+
+¡Adelante!
+
+---
+
+## Alternativa Corta (si lo prefieres simple):
+
+---
+
+Lee README_CLAUDE_CODE.md y ejecuta todas las tareas para compilar este proyecto de Civil 3D. Detecta mi versión de Civil 3D, actualiza las referencias, compila y despliega la DLL automáticamente. Reporta cualquier error.
+
+---
+

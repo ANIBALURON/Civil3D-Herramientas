@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loteo Civil3D - Tutorial Interactivo</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #0a0a1a; color: #e0e0e0; overflow: hidden; height: 100vh; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1a3a5c, #0d2240); padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2196F3; }
+.header h1 { font-size: 20px; color: #64B5F6; }
+.header .step-counter { font-size: 14px; color: #90CAF9; }
+
+/* Slide container */
+.slide-container { height: calc(100vh - 120px); overflow: hidden; position: relative; }
+.slide { display: none; height: 100%; padding: 30px 50px; animation: fadeIn 0.5s ease; }
+.slide.active { display: flex; flex-direction: column; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Content layouts */
+.slide-split { display: flex; gap: 40px; flex: 1; align-items: center; }
+.slide-left, .slide-right { flex: 1; }
+.slide-full { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+/* Typography */
+h2 { font-size: 28px; color: #64B5F6; margin-bottom: 20px; }
+h3 { font-size: 20px; color: #90CAF9; margin-bottom: 15px; }
+p, li { font-size: 16px; line-height: 1.7; color: #ccc; }
+.highlight { color: #FFD54F; font-weight: bold; }
+.cmd { background: #1a2a3a; color: #4FC3F7; padding: 3px 10px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 15px; }
+
+/* SVG diagrams */
+.diagram { background: #111; border-radius: 12px; border: 1px solid #333; padding: 20px; width: 100%; }
+svg { width: 100%; height: auto; }
+svg text { font-family: 'Segoe UI', sans-serif; }
+
+/* Animated elements */
+.anim-fade { opacity: 0; transition: opacity 0.8s ease; }
+.anim-fade.show { opacity: 1; }
+.anim-slide { opacity: 0; transform: translateX(-30px); transition: all 0.6s ease; }
+.anim-slide.show { opacity: 1; transform: translateX(0); }
+.delay1 { transition-delay: 0.3s; }
+.delay2 { transition-delay: 0.6s; }
+.delay3 { transition-delay: 0.9s; }
+.delay4 { transition-delay: 1.2s; }
+
+/* Steps list */
+.steps-list { list-style: none; padding: 0; }
+.steps-list li { padding: 12px 15px; margin: 8px 0; background: #1a2a3a; border-left: 4px solid #2196F3; border-radius: 0 8px 8px 0; font-size: 16px; }
+.steps-list li .step-num { display: inline-block; width: 28px; height: 28px; background: #2196F3; color: white; text-align: center; line-height: 28px; border-radius: 50%; margin-right: 10px; font-weight: bold; font-size: 14px; }
+
+/* Command box */
+.cmd-box { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 15px 20px; margin: 10px 0; font-family: 'Consolas', monospace; }
+.cmd-box .prompt { color: #7ee787; }
+.cmd-box .output { color: #8b949e; }
+.cmd-box .input { color: #79c0ff; }
+
+/* Navigation */
+.nav { height: 70px; display: flex; justify-content: center; align-items: center; gap: 15px; background: #0d1520; border-top: 1px solid #1a3050; }
+.nav button { padding: 10px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s; }
+.btn-prev { background: #1a3050; color: #64B5F6; }
+.btn-prev:hover { background: #254060; }
+.btn-next { background: #2196F3; color: white; font-weight: bold; }
+.btn-next:hover { background: #1976D2; }
+.btn-next:active { transform: scale(0.97); }
+.dots { display: flex; gap: 6px; margin: 0 20px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #1a3050; transition: all 0.3s; }
+.dot.active { background: #2196F3; transform: scale(1.3); }
+.dot.visited { background: #1565C0; }
+
+/* Tooltip bubbles */
+.bubble { background: #1a3a5c; border: 1px solid #2196F3; border-radius: 12px; padding: 15px 20px; margin: 10px 0; position: relative; }
+.bubble::before { content: '💡'; position: absolute; top: -12px; left: 15px; font-size: 20px; }
+.bubble p { color: #B3E5FC; font-size: 15px; }
+
+/* Comparison */
+.compare { display: flex; gap: 20px; margin: 15px 0; }
+.compare-box { flex: 1; border-radius: 10px; padding: 15px; text-align: center; }
+.compare-antes { background: #2a1a1a; border: 2px solid #ef5350; }
+.compare-despues { background: #1a2a1a; border: 2px solid #66BB6A; }
+.compare-box h4 { margin-bottom: 10px; }
+.compare-antes h4 { color: #ef5350; }
+.compare-despues h4 { color: #66BB6A; }
+
+/* Water flow animation */
+@keyframes waterFlow {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+.water-drop { offset-path: path('M 50,20 C 100,40 150,80 200,120 C 250,160 300,180 350,200'); animation: waterFlow 3s linear infinite; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏗️ Loteo Civil3D - Tutorial Interactivo</h1>
+  <div class="step-counter">Paso <span id="currentStep">1</span> de <span id="totalSteps">10</span></div>
+</div>
+
+<div class="slide-container" id="slideContainer">
+
+<!-- SLIDE 1: Bienvenida -->
+<div class="slide active" id="slide1">
+  <div class="slide-full">
+    <h2 style="font-size: 42px; text-align: center; margin-bottom: 10px;">🏗️ Loteo Civil3D</h2>
+    <p style="font-size: 22px; color: #90CAF9; text-align: center; margin-bottom: 40px;">Tutorial: Cómo funciona el grading automático de lotes</p>
+
+    <div style="display: flex; gap: 30px; margin-top: 20px;">
+      <div class="anim-slide" style="background: #1a2a3a; padding: 25px; border-radius: 12px; text-align: center; width: 200px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">📐</div>
+        <h3 style="font-size: 16px;">Configurar</h3>
+        <p style="font-size: 13px;">Pendientes y parámetros</p>
+      </div>
+      <div class="anim-slide delay1" style="background: #1a2a3a; padding: 25px; border-radius: 12px; text-align: center; width: 200px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🏠</div>
+        <h3 style="font-size: 16px;">Gradar</h3>
+        <p style="font-size: 13px;">Elevaciones automáticas</p>
+      </div>
+      <div class="anim-slide delay2" style="background: #1a2a3a; padding: 25px; border-radius: 12px; text-align: center; width: 200px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🏷️</div>
+        <h3 style="font-size: 16px;">Etiquetar</h3>
+        <p style="font-size: 13px;">Elevaciones y pendientes</p>
+      </div>
+      <div class="anim-slide delay3" style="background: #1a2a3a; padding: 25px; border-radius: 12px; text-align: center; width: 200px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🔄</div>
+        <h3 style="font-size: 16px;">Actualizar</h3>
+        <p style="font-size: 13px;">Refrescar superficie</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 40px; color: #666; font-size: 14px;">Usa las flechas ← → o los botones para navegar</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: Qué es un loteo -->
+<div class="slide" id="slide2">
+  <h2>¿Qué es un loteo y por qué necesita grading?</h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="diagram">
+        <svg viewBox="0 0 500 350">
+          <!-- Calle -->
+          <rect x="30" y="10" width="440" height="50" rx="5" fill="#444" stroke="#888" stroke-width="2"/>
+          <text x="250" y="40" text-anchor="middle" fill="#FFD54F" font-size="16" font-weight="bold">🚗 CALLE 🚗</text>
+
+          <!-- Vereda -->
+          <rect x="30" y="60" width="440" height="15" fill="#666" stroke="#888"/>
+          <text x="250" y="72" text-anchor="middle" fill="#ddd" font-size="10">VEREDA</text>
+
+          <!-- Lotes -->
+          <g id="lote1">
+            <rect x="40" y="80" width="100" height="140" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,3"/>
+            <rect x="60" y="110" width="60" height="50" fill="#1a3a1a" stroke="#66BB6A" stroke-width="2"/>
+            <text x="90" y="140" text-anchor="middle" fill="#66BB6A" font-size="12">CASA</text>
+            <text x="90" y="235" text-anchor="middle" fill="#4FC3F7" font-size="11">Lote 1</text>
+          </g>
+          <g id="lote2">
+            <rect x="150" y="80" width="100" height="140" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,3"/>
+            <rect x="170" y="110" width="60" height="50" fill="#1a3a1a" stroke="#66BB6A" stroke-width="2"/>
+            <text x="200" y="140" text-anchor="middle" fill="#66BB6A" font-size="12">CASA</text>
+            <text x="200" y="235" text-anchor="middle" fill="#4FC3F7" font-size="11">Lote 2</text>
+          </g>
+          <g id="lote3">
+            <rect x="260" y="80" width="100" height="140" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,3"/>
+            <rect x="280" y="110" width="60" height="50" fill="#1a3a1a" stroke="#66BB6A" stroke-width="2"/>
+            <text x="310" y="140" text-anchor="middle" fill="#66BB6A" font-size="12">CASA</text>
+            <text x="310" y="235" text-anchor="middle" fill="#4FC3F7" font-size="11">Lote 3</text>
+          </g>
+          <g id="lote4">
+            <rect x="370" y="80" width="100" height="140" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,3"/>
+            <rect x="390" y="110" width="60" height="50" fill="#1a3a1a" stroke="#66BB6A" stroke-width="2"/>
+            <text x="420" y="140" text-anchor="middle" fill="#66BB6A" font-size="12">CASA</text>
+            <text x="420" y="235" text-anchor="middle" fill="#4FC3F7" font-size="11">Lote 4</text>
+          </g>
+
+          <!-- Fondo -->
+          <text x="250" y="260" text-anchor="middle" fill="#666" font-size="12">← FONDO DE LOTES →</text>
+
+          <!-- Leyenda -->
+          <rect x="40" y="280" width="15" height="15" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="3,2"/>
+          <text x="62" y="293" fill="#aaa" font-size="12">= Lote (Feature Line)</text>
+          <rect x="250" y="280" width="15" height="15" fill="#1a3a1a" stroke="#66BB6A" stroke-width="2"/>
+          <text x="272" y="293" fill="#aaa" font-size="12">= Pad / Casa (Feature Line)</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <p style="font-size: 17px; margin-bottom: 15px;">Un <span class="highlight">loteo residencial</span> típico tiene:</p>
+      <ul class="steps-list">
+        <li class="anim-slide"><span class="step-num">1</span> Una <span class="highlight">calle</span> al frente con su elevación</li>
+        <li class="anim-slide delay1"><span class="step-num">2</span> <span class="highlight">Lotes</span> rectangulares (Feature Lines cerrados)</li>
+        <li class="anim-slide delay2"><span class="step-num">3</span> Un <span class="highlight">Pad</span> donde va la casa (Feature Line cerrado)</li>
+        <li class="anim-slide delay3"><span class="step-num">4</span> El terreno debe tener <span class="highlight">pendiente</span> para drenar el agua</li>
+      </ul>
+      <div class="bubble" style="margin-top: 20px;">
+        <p>El <b>grading</b> es asignar elevaciones a cada vértice del lote para que el agua escurra correctamente hacia la calle o hacia atrás.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: El problema -->
+<div class="slide" id="slide3">
+  <h2>El problema: ¿Por qué automatizar?</h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="compare">
+        <div class="compare-box compare-antes">
+          <h4>❌ Sin grading</h4>
+          <svg viewBox="0 0 200 160">
+            <rect x="10" y="10" width="180" height="30" rx="3" fill="#444"/>
+            <text x="100" y="30" text-anchor="middle" fill="#FFD54F" font-size="11">CALLE 100.00</text>
+            <rect x="20" y="50" width="160" height="100" fill="none" stroke="#ef5350" stroke-width="2"/>
+            <text x="30" y="70" fill="#ef5350" font-size="11">100.00</text>
+            <text x="150" y="70" fill="#ef5350" font-size="11">100.00</text>
+            <text x="30" y="140" fill="#ef5350" font-size="11">100.00</text>
+            <text x="150" y="140" fill="#ef5350" font-size="11">100.00</text>
+            <text x="100" y="105" text-anchor="middle" fill="#ef5350" font-size="13">TODO PLANO</text>
+            <!-- Water puddle -->
+            <ellipse cx="100" cy="115" rx="40" ry="8" fill="#1565C0" opacity="0.6"/>
+            <text x="100" y="118" text-anchor="middle" fill="#90CAF9" font-size="9">💧 CHARCO</text>
+          </svg>
+        </div>
+        <div class="compare-box compare-despues">
+          <h4>✅ Con grading</h4>
+          <svg viewBox="0 0 200 160">
+            <rect x="10" y="10" width="180" height="30" rx="3" fill="#444"/>
+            <text x="100" y="30" text-anchor="middle" fill="#FFD54F" font-size="11">CALLE 100.00</text>
+            <rect x="20" y="50" width="160" height="100" fill="none" stroke="#66BB6A" stroke-width="2"/>
+            <text x="30" y="70" fill="#66BB6A" font-size="11">100.15</text>
+            <text x="150" y="70" fill="#66BB6A" font-size="11">100.15</text>
+            <text x="30" y="140" fill="#66BB6A" font-size="11">99.85</text>
+            <text x="150" y="140" fill="#66BB6A" font-size="11">99.85</text>
+            <!-- Water arrow -->
+            <line x1="100" y1="75" x2="100" y2="130" stroke="#42A5F5" stroke-width="2" marker-end="url(#arrowBlue)"/>
+            <text x="120" y="105" fill="#42A5F5" font-size="10">2%↓</text>
+            <defs><marker id="arrowBlue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#42A5F5"/></marker></defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="slide-right">
+      <h3>Hacer esto a mano:</h3>
+      <ul class="steps-list">
+        <li class="anim-slide" style="border-left-color: #ef5350;">❌ Calcular elevación de cada vértice con calculadora</li>
+        <li class="anim-slide delay1" style="border-left-color: #ef5350;">❌ Editar cada Feature Line punto por punto</li>
+        <li class="anim-slide delay2" style="border-left-color: #ef5350;">❌ Repetir para 20, 50, 100+ lotes</li>
+        <li class="anim-slide delay3" style="border-left-color: #ef5350;">❌ Etiquetar todo manualmente</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Con Loteo Civil3D:</h3>
+      <ul class="steps-list">
+        <li class="anim-slide" style="border-left-color: #66BB6A;">✅ Seleccionas los lotes</li>
+        <li class="anim-slide delay1" style="border-left-color: #66BB6A;">✅ El plugin calcula TODO automáticamente</li>
+        <li class="anim-slide delay2" style="border-left-color: #66BB6A;">✅ 100 lotes en segundos</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Conceptos clave -->
+<div class="slide" id="slide4">
+  <h2>Conceptos clave: Partes del lote</h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="diagram">
+        <svg viewBox="0 0 400 350">
+          <!-- Calle -->
+          <rect x="20" y="5" width="360" height="35" rx="5" fill="#555"/>
+          <text x="200" y="27" text-anchor="middle" fill="#FFD54F" font-size="14" font-weight="bold">CALLE (Elev: 100.00)</text>
+
+          <!-- Frente del lote -->
+          <line x1="60" y1="50" x2="340" y2="50" stroke="#FF9800" stroke-width="3"/>
+          <text x="200" y="48" text-anchor="middle" fill="#FF9800" font-size="11" font-weight="bold">FRENTE ▲</text>
+
+          <!-- Lote -->
+          <rect x="60" y="50" width="280" height="220" fill="rgba(33,150,243,0.05)" stroke="#4FC3F7" stroke-width="2"/>
+
+          <!-- Pad -->
+          <rect x="120" y="90" width="160" height="90" fill="rgba(102,187,106,0.1)" stroke="#66BB6A" stroke-width="3"/>
+          <text x="200" y="140" text-anchor="middle" fill="#66BB6A" font-size="16" font-weight="bold">PAD</text>
+          <text x="200" y="158" text-anchor="middle" fill="#81C784" font-size="11">(Plataforma de la casa)</text>
+
+          <!-- Reveal -->
+          <rect x="110" y="82" width="180" height="106" fill="none" stroke="#AB47BC" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="305" y="100" fill="#CE93D8" font-size="10">REVEAL</text>
+
+          <!-- Laterales -->
+          <line x1="60" y1="50" x2="60" y2="270" stroke="#26C6DA" stroke-width="2"/>
+          <text x="45" y="160" fill="#26C6DA" font-size="10" transform="rotate(-90, 45, 160)">LATERAL</text>
+          <line x1="340" y1="50" x2="340" y2="270" stroke="#26C6DA" stroke-width="2"/>
+          <text x="355" y="160" fill="#26C6DA" font-size="10" transform="rotate(90, 355, 160)">LATERAL</text>
+
+          <!-- Fondo -->
+          <line x1="60" y1="270" x2="340" y2="270" stroke="#EF5350" stroke-width="3"/>
+          <text x="200" y="290" text-anchor="middle" fill="#EF5350" font-size="11" font-weight="bold">▼ FONDO</text>
+
+          <!-- Elevaciones -->
+          <text x="70" y="67" fill="#FF9800" font-size="12" font-weight="bold">100.15</text>
+          <text x="290" y="67" fill="#FF9800" font-size="12" font-weight="bold">100.15</text>
+          <text x="70" y="265" fill="#EF5350" font-size="12" font-weight="bold">99.85</text>
+          <text x="290" y="265" fill="#EF5350" font-size="12" font-weight="bold">99.85</text>
+
+          <!-- Flecha de pendiente -->
+          <line x1="200" y1="70" x2="200" y2="255" stroke="#42A5F5" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowB)"/>
+          <text x="215" y="170" fill="#42A5F5" font-size="12" font-weight="bold">2% ↓</text>
+          <text x="215" y="185" fill="#42A5F5" font-size="10">DRENAJE</text>
+          <defs><marker id="arrowB" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#42A5F5"/></marker></defs>
+
+          <!-- Leyenda de elevacion pad -->
+          <text x="200" y="200" text-anchor="middle" fill="#66BB6A" font-size="10">Pad: 100.15</text>
+          <text x="200" y="212" text-anchor="middle" fill="#CE93D8" font-size="10">Reveal: 100.10</text>
+
+          <!-- Setback -->
+          <line x1="55" y1="50" x2="55" y2="90" stroke="#FFA726" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="38" y="73" fill="#FFA726" font-size="8">3m</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <ul class="steps-list">
+        <li class="anim-slide" style="border-left-color: #FF9800;">
+          <span style="color: #FF9800; font-weight: bold;">FRENTE</span> - Lado más cercano a la calle. Su elevación se toma de la superficie existente + un offset (ej: +0.15m)
+        </li>
+        <li class="anim-slide delay1" style="border-left-color: #EF5350;">
+          <span style="color: #EF5350; font-weight: bold;">FONDO</span> - Lado opuesto. Más bajo que el frente para que el agua drene (pendiente 2%)
+        </li>
+        <li class="anim-slide delay2" style="border-left-color: #66BB6A;">
+          <span style="color: #66BB6A; font-weight: bold;">PAD</span> - Plataforma donde va la casa. Elevada sobre el terreno para que no se inunde
+        </li>
+        <li class="anim-slide delay3" style="border-left-color: #CE93D8;">
+          <span style="color: #CE93D8; font-weight: bold;">REVEAL</span> - Borde alrededor del pad, un poco más bajo. Separa la casa del jardín
+        </li>
+      </ul>
+      <div class="bubble" style="margin-top: 15px;">
+        <p>Todo esto son <b>Feature Lines</b> en Civil 3D. El plugin solo cambia las <b>elevaciones</b> de sus vértices.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Corte lateral -->
+<div class="slide" id="slide5">
+  <h2>Vista de corte: ¿Cómo fluye el agua?</h2>
+  <div class="slide-full">
+    <div class="diagram" style="max-width: 900px;">
+      <svg viewBox="0 0 800 300" id="crossSection">
+        <!-- Grid -->
+        <g opacity="0.15">
+          <line x1="80" y1="50" x2="80" y2="250" stroke="#fff"/>
+          <line x1="80" y1="250" x2="750" y2="250" stroke="#fff"/>
+          <line x1="80" y1="200" x2="750" y2="200" stroke="#fff" stroke-dasharray="5,5"/>
+          <line x1="80" y1="150" x2="750" y2="150" stroke="#fff" stroke-dasharray="5,5"/>
+          <line x1="80" y1="100" x2="750" y2="100" stroke="#fff" stroke-dasharray="5,5"/>
+        </g>
+        <text x="70" y="255" text-anchor="end" fill="#666" font-size="10">99.50</text>
+        <text x="70" y="205" text-anchor="end" fill="#666" font-size="10">99.75</text>
+        <text x="70" y="155" text-anchor="end" fill="#666" font-size="10">100.00</text>
+        <text x="70" y="105" text-anchor="end" fill="#666" font-size="10">100.25</text>
+
+        <!-- Calle -->
+        <rect x="100" y="145" width="80" height="15" fill="#555" rx="3"/>
+        <text x="140" y="156" text-anchor="middle" fill="#FFD54F" font-size="10" font-weight="bold">CALLE</text>
+        <text x="140" y="140" text-anchor="middle" fill="#FFD54F" font-size="11">100.00</text>
+
+        <!-- Frente del lote -->
+        <circle cx="210" cy="130" r="6" fill="#FF9800"/>
+        <text x="210" y="120" text-anchor="middle" fill="#FF9800" font-size="11" font-weight="bold">100.15</text>
+        <text x="210" y="110" text-anchor="middle" fill="#FF9800" font-size="9">FRENTE</text>
+
+        <!-- Pendiente frente a pad -->
+        <line x1="210" y1="130" x2="320" y2="125" stroke="#66BB6A" stroke-width="3"/>
+
+        <!-- Pad -->
+        <rect x="320" y="120" width="120" height="8" fill="#66BB6A" rx="2"/>
+        <text x="380" y="115" text-anchor="middle" fill="#66BB6A" font-size="12" font-weight="bold">PAD 100.15</text>
+        <text x="380" y="105" text-anchor="middle" fill="#81C784" font-size="9">🏠 CASA</text>
+
+        <!-- Reveal -->
+        <circle cx="310" cy="133" r="4" fill="#AB47BC"/>
+        <text x="310" y="148" text-anchor="middle" fill="#CE93D8" font-size="9">REVEAL</text>
+        <text x="310" y="158" text-anchor="middle" fill="#CE93D8" font-size="9">100.10</text>
+        <circle cx="450" cy="133" r="4" fill="#AB47BC"/>
+
+        <!-- Pendiente pad a fondo -->
+        <line x1="440" y1="125" x2="650" y2="185" stroke="#EF5350" stroke-width="3"/>
+
+        <!-- Fondo -->
+        <circle cx="650" cy="185" r="6" fill="#EF5350"/>
+        <text x="650" y="175" text-anchor="middle" fill="#EF5350" font-size="11" font-weight="bold">99.85</text>
+        <text x="650" y="210" text-anchor="middle" fill="#EF5350" font-size="9">FONDO</text>
+
+        <!-- Pendiente label -->
+        <text x="550" y="145" text-anchor="middle" fill="#42A5F5" font-size="12" font-weight="bold">2% ↘</text>
+
+        <!-- Water drops animation -->
+        <g class="anim-fade" id="waterDrops">
+          <circle cx="250" cy="132" r="3" fill="#42A5F5" opacity="0.8">
+            <animate attributeName="cx" from="250" to="620" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="cy" from="132" to="182" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="300" cy="130" r="2.5" fill="#42A5F5" opacity="0.6">
+            <animate attributeName="cx" from="300" to="620" dur="3.5s" begin="0.5s" repeatCount="indefinite"/>
+            <animate attributeName="cy" from="130" to="182" dur="3.5s" begin="0.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="3.5s" begin="0.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="450" cy="128" r="3" fill="#42A5F5" opacity="0.7">
+            <animate attributeName="cx" from="450" to="640" dur="3s" begin="1s" repeatCount="indefinite"/>
+            <animate attributeName="cy" from="128" to="183" dur="3s" begin="1s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.7" to="0" dur="3s" begin="1s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- Terreno existente (EG) -->
+        <path d="M 100,155 L 210,148 L 380,142 L 650,200 L 750,210" fill="none" stroke="#8D6E63" stroke-width="1.5" stroke-dasharray="8,4"/>
+        <text x="720" y="220" fill="#8D6E63" font-size="10">EG</text>
+
+        <!-- Labels -->
+        <text x="400" y="275" text-anchor="middle" fill="#666" font-size="12">← Vista lateral del lote (corte transversal) →</text>
+        <text x="400" y="290" text-anchor="middle" fill="#42A5F5" font-size="11">💧 Las gotas azules muestran cómo fluye el agua</text>
+      </svg>
+    </div>
+    <div class="bubble" style="max-width: 700px; margin-top: 15px;">
+      <p>El <b>frente</b> está 15cm arriba de la calle. El <b>pad</b> está al mismo nivel. El <b>fondo</b> baja con 2% de pendiente. El agua fluye de la casa hacia el fondo del lote.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Paso 1 en Civil 3D -->
+<div class="slide" id="slide6">
+  <h2>En Civil 3D: Paso 1 - Preparar el dibujo</h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="diagram">
+        <svg viewBox="0 0 400 300">
+          <!-- Simulated Civil 3D viewport -->
+          <rect x="5" y="5" width="390" height="290" fill="#1a1a2e" rx="5" stroke="#333"/>
+
+          <!-- Crosshair -->
+          <line x1="0" y1="150" x2="400" y2="150" stroke="#333" stroke-width="0.5"/>
+          <line x1="200" y1="0" x2="200" y2="300" stroke="#333" stroke-width="0.5"/>
+
+          <!-- Surface TIN -->
+          <g opacity="0.3">
+            <line x1="20" y1="30" x2="100" y2="80" stroke="#8D6E63"/>
+            <line x1="100" y1="80" x2="200" y2="50" stroke="#8D6E63"/>
+            <line x1="200" y1="50" x2="300" y2="70" stroke="#8D6E63"/>
+            <line x1="300" y1="70" x2="380" y2="40" stroke="#8D6E63"/>
+            <line x1="20" y1="30" x2="50" y2="100" stroke="#8D6E63"/>
+            <line x1="200" y1="50" x2="180" y2="120" stroke="#8D6E63"/>
+          </g>
+          <text x="350" y="25" fill="#8D6E63" font-size="10">Superficie EG</text>
+
+          <!-- Calle alignment -->
+          <line x1="30" y1="75" x2="380" y2="75" stroke="#FFD54F" stroke-width="2"/>
+          <text x="200" y="70" text-anchor="middle" fill="#FFD54F" font-size="10">Eje de calle</text>
+
+          <!-- Feature Lines - Lotes -->
+          <rect x="40" y="95" width="75" height="110" fill="none" stroke="#00BCD4" stroke-width="1.5"/>
+          <rect x="125" y="95" width="75" height="110" fill="none" stroke="#00BCD4" stroke-width="1.5"/>
+          <rect x="210" y="95" width="75" height="110" fill="none" stroke="#00BCD4" stroke-width="1.5"/>
+          <rect x="295" y="95" width="75" height="110" fill="none" stroke="#00BCD4" stroke-width="1.5"/>
+
+          <!-- Feature Lines - Pads -->
+          <rect x="55" y="115" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="140" y="115" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="225" y="115" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="310" y="115" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+
+          <!-- Labels -->
+          <text x="78" y="230" text-anchor="middle" fill="#00BCD4" font-size="9">Lot Line</text>
+          <text x="78" y="140" text-anchor="middle" fill="#66BB6A" font-size="8">Pad</text>
+
+          <!-- Command line sim -->
+          <rect x="5" y="255" width="390" height="40" fill="#111" rx="0 0 5 5"/>
+          <text x="15" y="272" fill="#999" font-size="10" font-family="Consolas">Command:</text>
+          <text x="15" y="287" fill="#4FC3F7" font-size="10" font-family="Consolas">Superficie EG creada. Feature Lines listos.</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <h3>Lo que necesitas tener antes:</h3>
+      <ul class="steps-list">
+        <li class="anim-slide">
+          <span class="step-num">1</span>
+          <span class="highlight">Superficie EG</span> (terreno existente) con la calle ya definida
+        </li>
+        <li class="anim-slide delay1">
+          <span class="step-num">2</span>
+          <span style="color: #00BCD4; font-weight: bold;">Feature Lines de lotes</span> - Rectángulos cerrados que delimitan cada lote
+        </li>
+        <li class="anim-slide delay2">
+          <span class="step-num">3</span>
+          <span style="color: #66BB6A; font-weight: bold;">Feature Lines de pads</span> - Rectángulos dentro de cada lote donde va la casa
+        </li>
+      </ul>
+      <div class="bubble" style="margin-top: 15px;">
+        <p>Los Feature Lines pueden estar todos a elevación 0. El plugin les asigna las elevaciones correctas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Paso 2 - LOTEO_SETTINGS -->
+<div class="slide" id="slide7">
+  <h2>En Civil 3D: Paso 2 - <span class="cmd">LOTEO_SETTINGS</span></h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="diagram" style="background: #1e1e2e; padding: 10px;">
+        <svg viewBox="0 0 400 320">
+          <!-- Window frame -->
+          <rect x="5" y="5" width="390" height="310" rx="8" fill="#252535" stroke="#444"/>
+          <rect x="5" y="5" width="390" height="28" rx="8" fill="#333"/>
+          <text x="200" y="24" text-anchor="middle" fill="#ddd" font-size="11">Loteo Civil3D - Configuración de Grading</text>
+          <circle cx="20" cy="19" r="5" fill="#ef5350"/>
+          <circle cx="35" cy="19" r="5" fill="#FFD54F"/>
+          <circle cx="50" cy="19" r="5" fill="#66BB6A"/>
+
+          <!-- Tabs -->
+          <rect x="15" y="40" width="100" height="25" rx="4" fill="#2196F3"/>
+          <text x="65" y="57" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Grading</text>
+          <rect x="120" y="40" width="100" height="25" rx="4" fill="#1a1a2e"/>
+          <text x="170" y="57" text-anchor="middle" fill="#888" font-size="10">Pad / Reveal</text>
+          <rect x="225" y="40" width="100" height="25" rx="4" fill="#1a1a2e"/>
+          <text x="275" y="57" text-anchor="middle" fill="#888" font-size="10">Superficie</text>
+
+          <!-- Pendientes group -->
+          <rect x="15" y="75" width="370" height="80" rx="5" fill="none" stroke="#444"/>
+          <text x="25" y="72" fill="#90CAF9" font-size="10" font-weight="bold"> Pendientes del Lote (%) </text>
+          <text x="25" y="97" fill="#ccc" font-size="10">Pendiente mínima:</text>
+          <rect x="280" y="85" width="80" height="20" rx="3" fill="#1a1a2e" stroke="#555"/>
+          <text x="320" y="99" text-anchor="middle" fill="#4FC3F7" font-size="11">2.00</text>
+          <text x="25" y="117" fill="#ccc" font-size="10">Pendiente máxima:</text>
+          <rect x="280" y="105" width="80" height="20" rx="3" fill="#1a1a2e" stroke="#555"/>
+          <text x="320" y="119" text-anchor="middle" fill="#4FC3F7" font-size="11">5.00</text>
+          <text x="25" y="140" fill="#ccc" font-size="10">Pendiente default:</text>
+          <rect x="280" y="128" width="80" height="20" rx="3" fill="#1a1a2e" stroke="#555"/>
+          <text x="320" y="142" text-anchor="middle" fill="#FFD54F" font-size="11" font-weight="bold">2.00</text>
+
+          <!-- Calle frontal group -->
+          <rect x="15" y="165" width="370" height="70" rx="5" fill="none" stroke="#444"/>
+          <text x="25" y="162" fill="#90CAF9" font-size="10" font-weight="bold"> Calle Frontal </text>
+          <rect x="25" y="177" width="12" height="12" fill="#2196F3" rx="2"/>
+          <text x="42" y="188" fill="#ccc" font-size="10">Empatar con elevación de calle</text>
+          <text x="25" y="215" fill="#ccc" font-size="10">Pendiente a calle (%):</text>
+          <rect x="280" y="203" width="80" height="20" rx="3" fill="#1a1a2e" stroke="#555"/>
+          <text x="320" y="217" text-anchor="middle" fill="#4FC3F7" font-size="11">2.00</text>
+
+          <!-- Drenaje -->
+          <rect x="15" y="245" width="370" height="35" rx="5" fill="none" stroke="#444"/>
+          <text x="25" y="242" fill="#90CAF9" font-size="10" font-weight="bold"> Drenaje </text>
+          <rect x="25" y="255" width="12" height="12" fill="#2196F3" rx="2"/>
+          <text x="42" y="266" fill="#ccc" font-size="10">Drenar hacia atrás</text>
+          <circle cx="220" cy="261" r="5" fill="#2196F3"/>
+          <text x="230" y="265" fill="#ccc" font-size="9">Frente→Atrás</text>
+
+          <!-- Buttons -->
+          <rect x="250" y="290" width="55" height="20" rx="4" fill="#2196F3"/>
+          <text x="278" y="304" text-anchor="middle" fill="white" font-size="9" font-weight="bold">Aceptar</text>
+          <rect x="315" y="290" width="55" height="20" rx="4" fill="#444"/>
+          <text x="343" y="304" text-anchor="middle" fill="#ccc" font-size="9">Cancelar</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <p style="margin-bottom: 15px;">Escribes <span class="cmd">LOTEO_SETTINGS</span> y se abre esta ventana:</p>
+      <ul class="steps-list">
+        <li class="anim-slide"><span class="step-num">→</span> <span class="highlight">Pendiente 2%</span> = por cada metro horizontal, baja 2 centímetros</li>
+        <li class="anim-slide delay1"><span class="step-num">→</span> <span class="highlight">Empatar con calle</span> = el frente del lote toma la elevación de la calle</li>
+        <li class="anim-slide delay2"><span class="step-num">→</span> <span class="highlight">Drenar hacia atrás</span> = el agua va de la calle hacia el fondo</li>
+      </ul>
+      <div class="bubble" style="margin-top: 20px;">
+        <p>Solo configuras esto <b>una vez</b>. Los valores se guardan. Después solo ejecutas el grading las veces que quieras.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Paso 3 - LOTEO_GRADER -->
+<div class="slide" id="slide8">
+  <h2>En Civil 3D: Paso 3 - <span class="cmd">LOTEO_GRADER</span></h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <div class="diagram">
+        <svg viewBox="0 0 400 300">
+          <rect x="5" y="5" width="390" height="230" fill="#1a1a2e" rx="5" stroke="#333"/>
+
+          <!-- Selected lotes (highlighted) -->
+          <rect x="40" y="50" width="75" height="110" fill="rgba(33,150,243,0.15)" stroke="#2196F3" stroke-width="2.5">
+            <animate attributeName="stroke-opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="125" y="50" width="75" height="110" fill="rgba(33,150,243,0.15)" stroke="#2196F3" stroke-width="2.5">
+            <animate attributeName="stroke-opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite" begin="0.2s"/>
+          </rect>
+          <rect x="210" y="50" width="75" height="110" fill="rgba(33,150,243,0.15)" stroke="#2196F3" stroke-width="2.5">
+            <animate attributeName="stroke-opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite" begin="0.4s"/>
+          </rect>
+          <rect x="295" y="50" width="75" height="110" fill="rgba(33,150,243,0.15)" stroke="#2196F3" stroke-width="2.5">
+            <animate attributeName="stroke-opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite" begin="0.6s"/>
+          </rect>
+
+          <!-- Pads -->
+          <rect x="55" y="70" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="140" y="70" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="225" y="70" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+          <rect x="310" y="70" width="45" height="40" fill="none" stroke="#66BB6A" stroke-width="1.5"/>
+
+          <!-- Selection window -->
+          <rect x="30" y="40" width="350" height="130" fill="none" stroke="#4FC3F7" stroke-width="1" stroke-dasharray="6,3"/>
+          <text x="200" y="190" text-anchor="middle" fill="#4FC3F7" font-size="11">↑ Ventana de selección</text>
+
+          <!-- Calle -->
+          <line x1="30" y1="35" x2="380" y2="35" stroke="#FFD54F" stroke-width="2"/>
+          <text x="200" y="28" text-anchor="middle" fill="#FFD54F" font-size="9">CALLE</text>
+
+          <!-- Command line -->
+          <rect x="5" y="240" width="390" height="55" fill="#111" rx="0 0 5 5"/>
+          <text x="15" y="257" fill="#7ee787" font-size="9" font-family="Consolas">Command: LOTEO_GRADER</text>
+          <text x="15" y="272" fill="#e0e0e0" font-size="9" font-family="Consolas">Seleccione las LINEAS DE LOTE:</text>
+          <text x="15" y="287" fill="#4FC3F7" font-size="9" font-family="Consolas">4 línea(s) de lote seleccionadas. ✓</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <h3>El proceso:</h3>
+      <ul class="steps-list">
+        <li class="anim-slide">
+          <span class="step-num">1</span>
+          Escribes <span class="cmd">LOTEO_GRADER</span>
+        </li>
+        <li class="anim-slide delay1">
+          <span class="step-num">2</span>
+          <span class="highlight">Seleccionas los lotes</span> con una ventana (los Feature Lines azules parpadean)
+        </li>
+        <li class="anim-slide delay2">
+          <span class="step-num">3</span>
+          <span class="highlight">Seleccionas los pads</span> (opcional, Enter para omitir)
+        </li>
+        <li class="anim-slide delay3">
+          <span class="step-num">4</span>
+          Confirmas <span class="highlight">Si</span> → ¡El plugin hace todo el cálculo!
+        </li>
+      </ul>
+      <div class="cmd-box" style="margin-top: 15px;">
+        <div><span class="prompt">Command:</span> <span class="input">LOTEO_GRADER</span></div>
+        <div><span class="output">Seleccione LINEAS DE LOTE:</span></div>
+        <div><span class="output">4 línea(s) de lote seleccionadas.</span></div>
+        <div><span class="output">Seleccione PADS [Enter omitir]:</span></div>
+        <div><span class="output">4 pad(s) seleccionados.</span></div>
+        <div><span class="output">Procesar 4 lotes y 4 pads? [Si]:</span> <span class="input">Si</span></div>
+        <div style="color: #66BB6A;">✅ Grading completado: 4 lote(s)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Resultado -->
+<div class="slide" id="slide9">
+  <h2>Resultado: Antes vs Después</h2>
+  <div class="slide-split">
+    <div class="slide-left">
+      <h3 style="text-align: center; color: #ef5350;">❌ ANTES (todo plano)</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 350 200">
+          <rect x="10" y="5" width="330" height="25" fill="#555" rx="3"/>
+          <text x="175" y="22" text-anchor="middle" fill="#FFD54F" font-size="10">CALLE 100.00</text>
+          <rect x="20" y="40" width="310" height="130" fill="rgba(239,83,80,0.05)" stroke="#ef5350" stroke-width="1.5"/>
+          <!-- All same elevation -->
+          <text x="35" y="57" fill="#ef5350" font-size="11">0.00</text>
+          <text x="290" y="57" fill="#ef5350" font-size="11">0.00</text>
+          <text x="35" y="163" fill="#ef5350" font-size="11">0.00</text>
+          <text x="290" y="163" fill="#ef5350" font-size="11">0.00</text>
+          <rect x="100" y="65" width="150" height="60" fill="none" stroke="#ef5350" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="175" y="100" text-anchor="middle" fill="#ef5350" font-size="11">0.00</text>
+          <text x="175" y="115" text-anchor="middle" fill="#666" font-size="10">Sin elevaciones</text>
+          <!-- Sad water -->
+          <text x="175" y="185" text-anchor="middle" fill="#666" font-size="10">💧 Sin drenaje = inundación</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-right">
+      <h3 style="text-align: center; color: #66BB6A;">✅ DESPUÉS (grading aplicado)</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 350 200">
+          <rect x="10" y="5" width="330" height="25" fill="#555" rx="3"/>
+          <text x="175" y="22" text-anchor="middle" fill="#FFD54F" font-size="10">CALLE 100.00</text>
+          <rect x="20" y="40" width="310" height="130" fill="rgba(102,187,106,0.05)" stroke="#66BB6A" stroke-width="2"/>
+          <!-- Graded elevations -->
+          <text x="30" y="57" fill="#FF9800" font-size="11" font-weight="bold">100.15</text>
+          <text x="280" y="57" fill="#FF9800" font-size="11" font-weight="bold">100.15</text>
+          <text x="30" y="163" fill="#EF5350" font-size="11" font-weight="bold">99.85</text>
+          <text x="280" y="163" fill="#EF5350" font-size="11" font-weight="bold">99.85</text>
+          <!-- Pad -->
+          <rect x="100" y="60" width="150" height="60" fill="rgba(102,187,106,0.1)" stroke="#66BB6A" stroke-width="2"/>
+          <text x="175" y="90" text-anchor="middle" fill="#66BB6A" font-size="12" font-weight="bold">PAD 100.15</text>
+          <!-- Reveal -->
+          <rect x="93" y="55" width="164" height="70" fill="none" stroke="#CE93D8" stroke-width="1" stroke-dasharray="4,2"/>
+          <text x="175" y="105" text-anchor="middle" fill="#CE93D8" font-size="9">Reveal 100.10</text>
+          <!-- Arrows -->
+          <line x1="175" y1="55" x2="175" y2="155" stroke="#42A5F5" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="188" y="115" fill="#42A5F5" font-size="10" font-weight="bold">2%↓</text>
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#42A5F5"/></marker></defs>
+          <text x="175" y="185" text-anchor="middle" fill="#42A5F5" font-size="10">💧 Agua drena correctamente →</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="bubble" style="max-width: 800px; margin: 15px auto;">
+    <p>El plugin cambió las elevaciones de los vértices, creó el pad elevado, añadió el reveal, y agregó todo como breaklines a la superficie FG. <b>Todo automático.</b></p>
+  </div>
+</div>
+
+<!-- SLIDE 10: Resumen -->
+<div class="slide" id="slide10">
+  <h2>Resumen: 4 comandos, eso es todo</h2>
+  <div class="slide-full">
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 900px;">
+
+      <div class="anim-slide" style="background: linear-gradient(135deg, #1a3a5c, #0d2240); padding: 25px; border-radius: 15px; width: 200px; border: 1px solid #2196F3;">
+        <div style="font-size: 40px; text-align: center; margin-bottom: 10px;">⚙️</div>
+        <h3 style="text-align: center; font-size: 14px; margin-bottom: 8px;">Paso 1</h3>
+        <div class="cmd" style="display: block; text-align: center; margin-bottom: 8px;">LOTEO_SETTINGS</div>
+        <p style="font-size: 12px; text-align: center;">Configura pendientes, pad, reveal, superficie</p>
+        <p style="font-size: 11px; text-align: center; color: #FFD54F; margin-top: 8px;">Solo 1 vez</p>
+      </div>
+
+      <div class="anim-slide delay1" style="background: linear-gradient(135deg, #1a3a5c, #0d2240); padding: 25px; border-radius: 15px; width: 200px; border: 2px solid #66BB6A;">
+        <div style="font-size: 40px; text-align: center; margin-bottom: 10px;">🏗️</div>
+        <h3 style="text-align: center; font-size: 14px; margin-bottom: 8px;">Paso 2</h3>
+        <div class="cmd" style="display: block; text-align: center; margin-bottom: 8px;">LOTEO_GRADER</div>
+        <p style="font-size: 12px; text-align: center;">Selecciona lotes + pads → grading automático</p>
+        <p style="font-size: 11px; text-align: center; color: #66BB6A; margin-top: 8px;">⭐ El principal</p>
+      </div>
+
+      <div class="anim-slide delay2" style="background: linear-gradient(135deg, #1a3a5c, #0d2240); padding: 25px; border-radius: 15px; width: 200px; border: 1px solid #2196F3;">
+        <div style="font-size: 40px; text-align: center; margin-bottom: 10px;">🏷️</div>
+        <h3 style="text-align: center; font-size: 14px; margin-bottom: 8px;">Paso 3</h3>
+        <div class="cmd" style="display: block; text-align: center; margin-bottom: 8px;">LOTEO_LABELER</div>
+        <p style="font-size: 12px; text-align: center;">Etiqueta elevaciones, pendientes, puntos altos</p>
+        <p style="font-size: 11px; text-align: center; color: #90CAF9; margin-top: 8px;">Opcional</p>
+      </div>
+
+      <div class="anim-slide delay3" style="background: linear-gradient(135deg, #1a3a5c, #0d2240); padding: 25px; border-radius: 15px; width: 200px; border: 1px solid #2196F3;">
+        <div style="font-size: 40px; text-align: center; margin-bottom: 10px;">🔄</div>
+        <h3 style="text-align: center; font-size: 14px; margin-bottom: 8px;">Paso 4</h3>
+        <div class="cmd" style="display: block; text-align: center; margin-bottom: 8px;">LOTEO_UPDATE</div>
+        <p style="font-size: 12px; text-align: center;">Refresca la superficie si haces cambios</p>
+        <p style="font-size: 11px; text-align: center; color: #90CAF9; margin-top: 8px;">Cuando necesites</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; max-width: 600px;">
+      <p style="font-size: 18px; color: #64B5F6;">El plugin ya está instalado en tu Civil 3D 2024.</p>
+      <p style="font-size: 14px; color: #888; margin-top: 10px;">Abre Civil 3D → escribe <span class="cmd">LOTEO_HELP</span> → empieza a usarlo</p>
+      <p style="font-size: 13px; color: #555; margin-top: 20px;">Proyecto: C:\Users\Anibal\LoteoCivil3D\</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="btn-prev" onclick="prevSlide()">← Anterior</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn-next" onclick="nextSlide()">Siguiente →</button>
+</div>
+
+<script>
+let currentSlide = 1;
+const totalSlides = 10;
+
+document.getElementById('totalSteps').textContent = totalSlides;
+
+// Create dots
+const dotsContainer = document.getElementById('dots');
+for (let i = 1; i <= totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dot.style.cursor = 'pointer';
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(n) {
+  if (n < 1 || n > totalSlides) return;
+
+  document.getElementById('slide' + currentSlide).classList.remove('active');
+  document.querySelectorAll('.dot')[currentSlide - 1].classList.remove('active');
+  document.querySelectorAll('.dot')[currentSlide - 1].classList.add('visited');
+
+  currentSlide = n;
+
+  const slide = document.getElementById('slide' + currentSlide);
+  slide.classList.add('active');
+  document.querySelectorAll('.dot')[currentSlide - 1].classList.add('active');
+  document.getElementById('currentStep').textContent = currentSlide;
+
+  // Trigger animations
+  setTimeout(() => {
+    slide.querySelectorAll('.anim-fade, .anim-slide').forEach(el => el.classList.add('show'));
+  }, 100);
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+});
+
+// Initial animations
+setTimeout(() => {
+  document.querySelectorAll('#slide1 .anim-fade, #slide1 .anim-slide').forEach(el => el.classList.add('show'));
+}, 300);
+</script>
+
+</body>
+</html>

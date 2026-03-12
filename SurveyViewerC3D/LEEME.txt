@@ -1,0 +1,46 @@
+================================================================
+  SURVEY VIEWER C3D - Plugin para Civil 3D
+================================================================
+
+DESCRIPCION:
+  Plugin que se carga dentro de Civil 3D para visualizar
+  la base de datos Survey SQLite sin salir del programa.
+
+COMANDO: SURVEYVIEWER (escribir en linea de comandos de Civil 3D)
+
+FUNCIONES:
+  - Ver tablas del Survey.sqlite dentro de Civil 3D
+  - Filtrar por grupo, descripcion (con prefijos), busqueda
+  - Dibujar puntos COGO en el dibujo (con layer automatico)
+  - Borrar puntos COGO temporales
+  - Zoom a punto seleccionado
+  - Exportar a CSV
+
+LAYERS AUTOMATICOS:
+  Los puntos se dibujan en el layer correcto segun su descripcion:
+  TN -> C3D_PUNTOS_TERRENO_NATURAL    TB -> C3D_TUBO_TENDIDO
+  CE -> C3D_PTS_CERCAS                CA -> C3D_PTS_CAMINOS
+  AR -> C3D_PTS_ARROYOS               HB -> C3D_HOMBRO_DDV
+  (ver diccionario completo en SurveyViewerPlugin.cs)
+
+COMO COMPILAR:
+  1. Abrir terminal en esta carpeta
+  2. Ejecutar: powershell -ExecutionPolicy Bypass -File build.ps1
+  3. Civil 3D debe estar CERRADO para que copie la DLL
+  4. Abrir Civil 3D -> el plugin se carga automaticamente
+
+ARCHIVOS:
+  SurveyViewerPlugin.cs  - Codigo fuente C#
+  build.ps1              - Script de compilacion (Roslyn)
+  libs\                  - Dependencias (System.Data.SQLite.dll)
+
+DESTINO DE LA DLL:
+  C:\ProgramData\Autodesk\ApplicationPlugins\SurveyViewerC3D.bundle\
+
+REQUISITOS:
+  - Visual Studio 2022 Community (para el compilador Roslyn)
+  - Civil 3D 2024 o superior
+  - .NET Framework 4.8
+
+Autor: Anibal
+Fecha: Marzo 2026

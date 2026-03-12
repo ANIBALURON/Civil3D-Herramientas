@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage SchemaVersion="1.0"
+  AutodeskProduct="AutoCAD"
+  ProductType="Application"
+  Name="Loteo Civil3D"
+  AppVersion="1.0.0.0"
+  Description="Herramientas de grading y etiquetado para loteos residenciales en Civil 3D."
+  Author="Anibal Uron"
+  Icon="./Contents/Resources/icon.ico"
+  FriendlyVersion="1.0.0.0">
+
+  <CompanyDetails Name="Anibal Uron" Email="" Url="" />
+  <RuntimeRequirements />
+
+  <Components Description="Win64 parts">
+    <RuntimeRequirements SupportPath="./Contents/Win64" OS="Win64" Platform="Civil3D" SeriesMin="R24.0" SeriesMax="R25.1" />
+    <ComponentEntry AppName="LoteoCivil3D" Version="1.0.0.0"
+      ModuleName="./Contents/Win64/LoteoCivil3D.dll"
+      AppDescription="Loteo Civil3D - Grading y Etiquetado"
+      LoadOnAutoCADStartup="True"
+      LoadOnCommandInvocation="True">
+      <Commands>
+        <Command Local="LOTEO_SETTINGS" Global="LOTEO_SETTINGS" />
+        <Command Local="LOTEO_GRADER" Global="LOTEO_GRADER" />
+        <Command Local="LOTEO_LABELER" Global="LOTEO_LABELER" />
+        <Command Local="LOTEO_UPDATE" Global="LOTEO_UPDATE" />
+        <Command Local="LOTEO_ABOUT" Global="LOTEO_ABOUT" />
+        <Command Local="LOTEO_HELP" Global="LOTEO_HELP" />
+      </Commands>
+    </ComponentEntry>
+  </Components>
+</ApplicationPackage>

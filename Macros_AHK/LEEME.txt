@@ -1,0 +1,31 @@
+================================================================
+  MACROS CIVIL 3D - AutoHotkey v2
+================================================================
+
+DESCRIPCION:
+  Script AHK v2 para usar el teclado Vortex Core 40% como
+  panel de macros en AutoCAD Civil 3D.
+
+FUNCIONAMIENTO:
+  - Win izq (un toque) = Toggle ON/OFF del modo Civil 3D
+  - Cuando esta ON, las letras se convierten en comandos:
+    A=PLINE, S=MOVE, D=COPY, etc.
+  - AppsKey (Win der en Vortex) = Win real + combinaciones
+
+ARCHIVOS:
+  Civil3D_Macros.ahk   - Script principal
+  DetectarTecla.ahk    - Utilidad para detectar teclas
+
+COMO EJECUTAR:
+  - Doble clic en Civil3D_Macros.ahk (se ejecuta como Admin)
+  - O agregar acceso directo al inicio de Windows
+
+REQUISITOS:
+  - AutoHotkey v2 instalado en:
+    C:\Users\Anibal\AppData\Local\Programs\AutoHotkey\v2\
+
+NOTA: Debe ejecutarse como Administrador para funcionar
+      correctamente con Civil 3D.
+
+Autor: Anibal
+Fecha: Marzo 2026

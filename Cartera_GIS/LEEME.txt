@@ -1,0 +1,37 @@
+================================================================
+  CARTERA PREDOBLADO - QGIS + Mapa HTML
+================================================================
+
+DESCRIPCION:
+  Sistema para procesar la cartera de predoblado del gasoducto.
+  Combina datos de Excel + CSV, genera capas GIS, mapa HTML
+  interactivo con Leaflet.js y panel QGIS con filtros.
+
+ARCHIVOS PRINCIPALES:
+  merge_cartera_gis.py     - Procesador: merge Excel+CSV,
+                             exporta GeoJSON/KML/CSV/HTML
+  panel_cartera.py         - Panel QGIS con filtros, estilos,
+                             estadisticas, exportar
+  config_proyecto.ini      - Configuracion (UTM 15, EPSG 32615)
+
+ARCHIVOS AUXILIARES:
+  descargar_capas_inegi.py - Descarga capas INEGI
+  Coordenadas_XML.py       - Procesamiento de coordenadas XML
+
+MAPA HTML:
+  - Leaflet.js con Google Satellite + OpenStreetMap
+  - Circulos coloreados por tipo de tubo
+  - Popup con datos + boton "Como llegar" (Google Maps)
+  - GPS del celular, etiquetas toggleables
+  - Publicado en: https://anibaluron.github.io/mapa-gasoducto/
+
+COPIAS:
+  Este directorio se debe mantener sincronizado con:
+  D:\CUXTAL_MERIDA\80_APLICACIONES\
+
+REQUISITOS:
+  - QGIS con Python (para panel_cartera.py)
+  - Python 3.x (para merge_cartera_gis.py)
+
+Autor: Anibal
+Fecha: Marzo 2026

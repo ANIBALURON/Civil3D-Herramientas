@@ -1,0 +1,26 @@
+================================================================
+  SCRIPTS AUTOLISP - Civil 3D / AutoCAD
+================================================================
+
+DESCRIPCION:
+  Scripts LISP para automatizar tareas repetitivas en Civil 3D.
+  Se cargan con APPLOAD o se agregan al startup.
+
+ARCHIVOS:
+  CAJAPERF.lsp        - Procesamiento de cajas de perforacion
+  COLOREAR_CAPAS.lsp  - Colorear capas automaticamente
+  ORDENAR_DIBUJO.lsp  - Organizar/limpiar dibujo
+  VISTAS_KP.lsp       - Crear vistas por kilometraje (KP)
+
+COMO CARGAR:
+  1. En Civil 3D escribir: APPLOAD
+  2. Navegar a esta carpeta
+  3. Seleccionar el .lsp deseado
+  4. Clic en "Cargar"
+
+  Para carga automatica:
+  1. APPLOAD -> Contenido del inicio
+  2. Agregar el .lsp deseado
+
+Autor: Anibal
+Fecha: Marzo 2026

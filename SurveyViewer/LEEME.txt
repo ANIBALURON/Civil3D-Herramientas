@@ -1,0 +1,36 @@
+================================================================
+  SURVEY VIEWER - Visor de Base de Datos Survey (Python)
+================================================================
+
+DESCRIPCION:
+  Aplicacion Python para visualizar, exportar e importar puntos
+  en bases de datos SQLite de Civil 3D Survey Database.
+
+FUNCIONES:
+  - Ver todas las tablas del Survey.sqlite
+  - Filtrar por grupo (ImportEvent), descripcion, busqueda
+  - Filtro por prefijo (escribir "TB" filtra TB100, TB205, etc.)
+  - Exportar puntos a CSV (PUNTO, X, Y, Z, DESC)
+  - Importar puntos desde CSV con numeracion automatica
+  - Eliminar grupos importados
+  - Validacion UTM y vista previa antes de importar
+  - Backup automatico antes de cada operacion
+  - Detecta si Civil 3D esta abierto (bloquea escritura)
+
+COMO EJECUTAR:
+  - Doble clic en "Survey Viewer.bat" en el escritorio
+  - O ejecutar: python survey_viewer.py
+
+ARCHIVOS:
+  survey_viewer.py  - Aplicacion principal
+  config.json       - Ultimo archivo abierto (se genera solo)
+
+REQUISITOS:
+  - Python 3.x instalado
+  - Civil 3D debe estar CERRADO para importar/eliminar
+
+NOTA: La base de datos Survey.sqlite se encuentra en:
+  C:\Users\Public\Documents\Autodesk\Civil 3D Projects\[PROYECTO]\
+
+Autor: Anibal
+Fecha: Marzo 2026

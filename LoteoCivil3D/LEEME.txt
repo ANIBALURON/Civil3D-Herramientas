@@ -1,0 +1,43 @@
+================================================================
+  LOTEO CIVIL 3D - Plugin de Loteo para Civil 3D
+================================================================
+
+DESCRIPCION:
+  Plugin para Civil 3D que automatiza el proceso de loteo
+  (grading de lotes residenciales). Calcula elevaciones de
+  lotes basandose en la calle y aplica pendientes.
+
+COMANDO: LOTEO (escribir en linea de comandos de Civil 3D)
+
+MODOS:
+  - WithPad (Norteamericano): lotes con separacion
+  - BackToBack (Latinoamericano): lotes 6x10 pegados
+
+FUENTES DE ELEVACION:
+  - Superficie de Civil 3D
+  - Feature Line de calle (borde sardinel)
+
+COMO COMPILAR:
+  1. Abrir terminal en esta carpeta
+  2. Ejecutar: powershell -ExecutionPolicy Bypass -File build.ps1
+  3. Civil 3D debe estar CERRADO
+  4. Abrir Civil 3D -> el plugin se carga automaticamente
+
+ARCHIVOS:
+  src\              - Codigo fuente C#
+  build.ps1         - Script de compilacion
+  LoteoCivil3D.csproj - Proyecto (para VS si se necesita)
+
+DOCUMENTACION COMPLETA:
+  LOTEO_CIVIL3D_DOCUMENTACION.md
+
+DESTINO DE LA DLL:
+  C:\ProgramData\Autodesk\ApplicationPlugins\LoteoCivil3D.Bundle\
+
+REQUISITOS:
+  - Visual Studio 2022 Community
+  - Civil 3D 2024 o superior
+  - .NET Framework 4.8
+
+Autor: Anibal
+Fecha: Marzo 2026
